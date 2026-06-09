@@ -61,6 +61,8 @@ class OrderPaymentFlowTestCase(unittest.TestCase):
         order = self.order_service.create_order(customer_id="C001", items=[{"product_id": "P001", "quantity": 1}])
         with self.assertRaisesRegex(ValidationError, "Supported methods: card, cash"):
             self.payment_service.process_payment(order_id=order.id, method="bitcoin", details={})
+        updated_order = self.order_service.get_order(order.id)
+        self.assertEqual(updated_order.status.value, "pending")
 
 
 if __name__ == "__main__":
