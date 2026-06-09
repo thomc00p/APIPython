@@ -21,12 +21,12 @@ class OrderService:
 
     def create_order(self, customer_id: str, items: list[dict]) -> Order:
         product_ids = {item["product_id"] for item in items}
-        products = {product_id: self._product_repository.get_by_id(product_id) for product_id in product_ids}
+        products = self._product_repository.get_by_ids(product_ids)
         order = self._order_factory.create(
             order_id=str(uuid4()),
             customer_id=customer_id,
             requested_items=items,
-            products={k: v for k, v in products.items() if v is not None},
+            products=products,
         )
         return self._order_repository.save(order)
 

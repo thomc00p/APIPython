@@ -16,6 +16,9 @@ class InMemoryProductRepository(ProductRepository):
     def get_by_id(self, product_id: str) -> Product | None:
         return self._products.get(product_id)
 
+    def get_by_ids(self, product_ids: set[str]) -> dict[str, Product]:
+        return {product_id: product for product_id in product_ids if (product := self._products.get(product_id)) is not None}
+
 
 class InMemoryOrderRepository(OrderRepository):
     def __init__(self) -> None:

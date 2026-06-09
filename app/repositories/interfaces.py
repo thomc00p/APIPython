@@ -12,6 +12,10 @@ class ProductRepository(ABC):
     def get_by_id(self, product_id: str) -> Product | None:
         raise NotImplementedError
 
+    @abstractmethod
+    def get_by_ids(self, product_ids: set[str]) -> dict[str, Product]:
+        raise NotImplementedError
+
 
 class OrderRepository(ABC):
     @abstractmethod
