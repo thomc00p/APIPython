@@ -5,9 +5,11 @@ from app.repositories.interfaces import OrderRepository, PaymentRepository, Prod
 class InMemoryProductRepository(ProductRepository):
     def __init__(self) -> None:
         self._products: dict[str, Product] = {
-            "P001": Product(id="P001", name="Teclado mecánico", price=50.0),
-            "P002": Product(id="P002", name="Mouse inalámbrico", price=25.0),
-            "P003": Product(id="P003", name="Monitor 24 pulgadas", price=180.0),
+            "P001": Product(id="P001", name="Hamburguesa clásica", price=290.0),
+            "P002": Product(id="P002", name="Papas fritas", price=120.0),
+            "P003": Product(id="P003", name="Coca-Cola 500ml", price=80.0),
+            "P004": Product(id="P004", name="Chivito al pan", price=350.0),
+            "P005": Product(id="P005", name="Agua mineral", price=60.0),
         }
 
     def list_all(self) -> list[Product]:

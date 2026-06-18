@@ -32,6 +32,10 @@ class OrderResponse(BaseModel):
     items: list[OrderItemResponse]
 
 
+class UpdateOrderStatusRequest(BaseModel):
+    status: str = Field(pattern="^(ready|delivered)$")
+
+
 class PaymentRequest(BaseModel):
     method: str = Field(min_length=1)
     details: dict[str, str] = Field(default_factory=dict)

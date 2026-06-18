@@ -5,6 +5,8 @@ from enum import Enum
 class OrderStatus(str, Enum):
     PENDING = "pending"
     PAID = "paid"
+    READY = "ready"
+    DELIVERED = "delivered"
 
 
 class PaymentStatus(str, Enum):
@@ -43,6 +45,16 @@ class Order:
 
     def mark_paid(self) -> None:
         self.status = OrderStatus.PAID
+
+    def mark_ready(self) -> None:
+        if self.status != OrderStatus.PAID:
+            raise ValueError("Order must be paid before marking it ready")
+        self.status = OrderStatus.READY
+
+    def mark_delivered(self) -> None:
+        if self.status != OrderStatus.READY:
+            raise ValueError("Order must be ready before confirming delivery")
+        self.status = OrderStatus.DELIVERED
 
 
 @dataclass

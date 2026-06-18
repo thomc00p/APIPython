@@ -1,0 +1,146 @@
+### Variables
+@baseUrl = http://127.0.0.1:8000
+@orderId = {{create_order.response.body.id}}
+
+# =============================================================================
+# CU1 – Registrar pedido
+# =============================================================================
+
+### Listar productos disponibles (paso previo a crear pedido)
+# GET /products
+GET {{baseUrl}}/products
+Accept: application/json
+
+###
+
+### Crear pedido (Cajero registra ítems del cliente)
+# POST /orders
+# @name create_order
+POST {{baseUrl}}/orders
+Content-Type: application/json
+
+{
+  "customer_id": "cliente-001",
+  "items": [
+    { "product_id": "P001", "quantity": 2 },
+    { "product_id": "P003", "quantity": 1 }
+  ]
+}
+
+# =============================================================================
+# CU2 – Procesar pago electrónico (tarjeta)
+# =============================================================================
+
+### Pagar con tarjeta (aprobada)
+# POST /orders/{order_id}/payments
+POST {{baseUrl}}/orders/{{orderId}}/payments
+Content-Type: application/json
+
+{
+  "method": "card",
+  "details": {
+    "card_token": "tok_aprobado_123"
+  }
+}
+
+###
+
+### Pagar con tarjeta (rechazada — token empieza con "fail")
+POST {{baseUrl}}/orders/{{orderId}}/payments
+Content-Type: application/json
+
+{
+  "method": "card",
+  "details": {
+    "card_token": "fail_insufficient_funds"
+  }
+}
+
+###
+
+### Pagar en efectivo
+POST {{baseUrl}}/orders/{{orderId}}/payments
+Content-Type: application/json
+
+{
+  "method": "cash",
+  "details": {}
+}
+
+# =============================================================================
+# CU3 – Consultar estado del pedido
+# =============================================================================
+
+### Consultar estado del pedido
+# GET /orders/{order_id}
+GET {{baseUrl}}/orders/{{orderId}}
+Accept: application/json
+
+# =============================================================================
+# CU4 – Marcar pedido listo (Cajero / Cocinero)
+# =============================================================================
+
+### Marcar pedido como listo para entregar
+# PATCH /orders/{order_id}/status
+PATCH {{baseUrl}}/orders/{{orderId}}/status
+Content-Type: application/json
+
+{
+  "status": "ready"
+}
+
+# =============================================================================
+# CU5 – Confirmar entrega de pedido
+# =============================================================================
+
+### Confirmar que el pedido fue entregado al cliente
+# PATCH /orders/{order_id}/status
+PATCH {{baseUrl}}/orders/{{orderId}}/status
+Content-Type: application/json
+
+{
+  "status": "delivered"
+}
+
+# =============================================================================
+# Casos de error – para validar respuestas de la API
+# =============================================================================
+
+### Crear pedido con producto inexistente → 404
+POST {{baseUrl}}/orders
+Content-Type: application/json
+
+{
+  "customer_id": "cliente-001",
+  "items": [
+    { "product_id": "P999", "quantity": 1 }
+  ]
+}
+
+###
+
+### Crear pedido sin ítems → 422 (validación Pydantic)
+POST {{baseUrl}}/orders
+Content-Type: application/json
+
+{
+  "customer_id": "cliente-001",
+  "items": []
+}
+
+###
+
+### Pagar con método no soportado → 400
+POST {{baseUrl}}/orders/{{orderId}}/payments
+Content-Type: application/json
+
+{
+  "method": "bitcoin",
+  "details": {}
+}
+
+###
+
+### Pedido inexistente → 404
+GET {{baseUrl}}/orders/orden-que-no-existe
+Accept: application/json
