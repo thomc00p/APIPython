@@ -295,8 +295,244 @@ def custom_docs() -> HTMLResponse:
     </script>
     """
 
+    footer_section = """
+    <style>
+      #tr-guide {
+        max-width: 1460px;
+        margin: 48px auto 64px;
+        padding: 0 20px;
+        font-family: 'Inter', system-ui, sans-serif;
+        color: #1a1a1a;
+      }
+      #tr-guide h2 {
+        font-size: 18px;
+        font-weight: 700;
+        margin: 0 0 28px;
+        letter-spacing: -0.3px;
+      }
+      #tr-guide h3 {
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        color: #999;
+        margin: 0 0 12px;
+      }
+
+      /* --- Flujo --- */
+      #tr-guide .tr-flow {
+        background: #fff;
+        border: 1px solid #e0ddd8;
+        border-radius: 10px;
+        padding: 20px 24px;
+        margin-bottom: 16px;
+      }
+      #tr-guide .tr-steps { display: flex; flex-direction: column; gap: 10px; }
+      #tr-guide .tr-step { display: flex; align-items: flex-start; gap: 12px; }
+      #tr-guide .tr-step-num {
+        min-width: 24px; height: 24px;
+        background: #1c1c1c; color: #fff;
+        border-radius: 50%; font-size: 11px; font-weight: 700;
+        display: flex; align-items: center; justify-content: center;
+        margin-top: 1px; flex-shrink: 0;
+      }
+      #tr-guide .tr-step-body { font-size: 13px; color: #444; line-height: 1.55; }
+      #tr-guide .tr-step-body strong { color: #1c1c1c; font-weight: 600; }
+      #tr-guide .tr-step-body code {
+        font-size: 12px; background: #f5f4f0;
+        border: 1px solid #e0ddd8; border-radius: 4px;
+        padding: 1px 5px; font-family: monospace; color: #1c1c1c;
+      }
+      #tr-guide .tr-states {
+        display: flex; align-items: center; gap: 8px;
+        flex-wrap: wrap; margin-top: 16px; padding-top: 16px;
+        border-top: 1px solid #eeecea;
+      }
+      #tr-guide .tr-state {
+        font-size: 12px; font-weight: 600; padding: 4px 12px;
+        border-radius: 20px; border: 1.5px solid #1c1c1c;
+        background: #fff; color: #1c1c1c;
+      }
+      #tr-guide .tr-arrow-state { color: #bbb; font-size: 14px; }
+
+      /* --- Cards de endpoints (opción A) --- */
+      #tr-guide .tr-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 32px;
+      }
+      @media (max-width: 800px) { #tr-guide .tr-grid { grid-template-columns: 1fr; } }
+      #tr-guide .tr-card {
+        background: #fff;
+        border: 1px solid #e0ddd8;
+        border-radius: 10px;
+        padding: 18px 22px;
+      }
+      #tr-guide .tr-card-header {
+        display: flex; align-items: baseline;
+        gap: 6px; margin-bottom: 10px;
+      }
+      #tr-guide .tr-method {
+        font-size: 12px; font-weight: 700;
+        color: #1c1c1c; font-family: monospace;
+        letter-spacing: 0.03em;
+      }
+      #tr-guide .tr-sep { color: #bbb; font-size: 13px; }
+      #tr-guide .tr-path {
+        font-size: 13px; font-weight: 600;
+        color: #1c1c1c; font-family: monospace;
+      }
+      #tr-guide .tr-card p {
+        font-size: 13px; color: #555;
+        margin: 0 0 10px; line-height: 1.55;
+      }
+      #tr-guide .tr-card p:last-child { margin-bottom: 0; }
+      #tr-guide .tr-cu {
+        font-size: 12px; color: #777;
+        border-top: 1px solid #eeecea;
+        padding-top: 10px; margin-top: 10px;
+      }
+
+      /* --- Tabla de endpoints (opción B) --- */
+      #tr-guide .tr-table-wrap {
+        background: #fff;
+        border: 1px solid #e0ddd8;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 32px;
+      }
+      #tr-guide table.tr-table {
+        width: 100%; border-collapse: collapse;
+        font-size: 13px;
+      }
+      #tr-guide table.tr-table thead tr {
+        background: #f5f4f0;
+        border-bottom: 1px solid #e0ddd8;
+      }
+      #tr-guide table.tr-table th {
+        text-align: left; padding: 10px 16px;
+        font-size: 11px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.07em;
+        color: #999;
+      }
+      #tr-guide table.tr-table td {
+        padding: 11px 16px;
+        border-bottom: 1px solid #f0ede8;
+        vertical-align: top;
+        color: #444;
+        line-height: 1.5;
+      }
+      #tr-guide table.tr-table tr:last-child td { border-bottom: none; }
+      #tr-guide table.tr-table tr:hover td { background: #fafaf8; }
+      #tr-guide .td-method {
+        font-family: monospace; font-weight: 700;
+        color: #1c1c1c; white-space: nowrap;
+      }
+      #tr-guide .td-path {
+        font-family: monospace; color: #1c1c1c;
+        white-space: nowrap;
+      }
+      #tr-guide .td-cu { color: #777; font-size: 12px; white-space: nowrap; }
+
+      #tr-guide .tr-option-label {
+        font-size: 11px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.08em;
+        color: #bbb; margin: 28px 0 10px;
+      }
+    </style>
+
+    <div id="tr-guide">
+      <h2>Guía de uso</h2>
+
+      <!-- Flujo completo -->
+      <div class="tr-flow">
+        <h3>Flujo completo de un pedido</h3>
+        <div class="tr-steps">
+          <div class="tr-step">
+            <div class="tr-step-num">1</div>
+            <div class="tr-step-body"><strong>GET /products</strong> — El cajero consulta qué productos hay disponibles antes de tomar el pedido.</div>
+          </div>
+          <div class="tr-step">
+            <div class="tr-step-num">2</div>
+            <div class="tr-step-body"><strong>POST /orders</strong> — El cajero registra el pedido con los ítems y cantidades. La API calcula el total automáticamente.</div>
+          </div>
+          <div class="tr-step">
+            <div class="tr-step-num">3</div>
+            <div class="tr-step-body"><strong>POST /orders/{id}/payments</strong> — El cliente paga con tarjeta o efectivo. Si el pago es aprobado, el pedido pasa a <code>paid</code> y se dispara la notificación.</div>
+          </div>
+          <div class="tr-step">
+            <div class="tr-step-num">4</div>
+            <div class="tr-step-body"><strong>PATCH /orders/{id}/status</strong> con <code>"status": "ready"</code> — El cocinero indica que el pedido está listo para entregar.</div>
+          </div>
+          <div class="tr-step">
+            <div class="tr-step-num">5</div>
+            <div class="tr-step-body"><strong>PATCH /orders/{id}/status</strong> con <code>"status": "delivered"</code> — El cajero confirma que el cliente retiró el pedido.</div>
+          </div>
+        </div>
+        <div class="tr-states">
+          <span class="tr-state">pending</span>
+          <span class="tr-arrow-state">→</span>
+          <span class="tr-state">paid</span>
+          <span class="tr-arrow-state">→</span>
+          <span class="tr-state">ready</span>
+          <span class="tr-arrow-state">→</span>
+          <span class="tr-state">delivered</span>
+        </div>
+      </div>
+
+      <!-- Tabla de endpoints -->
+      <h3>Endpoints</h3>
+      <div class="tr-table-wrap">
+        <table class="tr-table">
+          <thead>
+            <tr>
+              <th>Método</th>
+              <th>Ruta</th>
+              <th>Descripción</th>
+              <th>Caso de uso</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-method">GET</td>
+              <td class="td-path">/products</td>
+              <td>Lista los productos disponibles del food truck.</td>
+              <td class="td-cu">Paso previo al CU1</td>
+            </tr>
+            <tr>
+              <td class="td-method">POST</td>
+              <td class="td-path">/orders</td>
+              <td>Registra un nuevo pedido y calcula el total.</td>
+              <td class="td-cu">CU1 – Registrar pedido</td>
+            </tr>
+            <tr>
+              <td class="td-method">GET</td>
+              <td class="td-path">/orders/{order_id}</td>
+              <td>Consulta el estado y detalle de un pedido.</td>
+              <td class="td-cu">CU3 – Consultar estado</td>
+            </tr>
+            <tr>
+              <td class="td-method">POST</td>
+              <td class="td-path">/orders/{order_id}/payments</td>
+              <td>Procesa el pago (tarjeta o efectivo).</td>
+              <td class="td-cu">CU2 – Procesar pago</td>
+            </tr>
+            <tr>
+              <td class="td-method">PATCH</td>
+              <td class="td-path">/orders/{order_id}/status</td>
+              <td>Marca el pedido como listo o confirma su entrega.</td>
+              <td class="td-cu">CU4 / CU5</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+    """
+
     html = html.replace("</head>", custom_css + "</head>")
-    html = html.replace("</body>", translate_js + "</body>")
+    html = html.replace("</body>", footer_section + translate_js + "</body>")
     return HTMLResponse(html)
 
 product_repository = InMemoryProductRepository()
